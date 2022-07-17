@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+    environment:
+      - PORT=3000
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_TYPE=postgres
+      - DATABASE_NAME=canguro
+      - DATABASE_HOST=db
+      - EMAIL_USER=ddfbad03fa4580
+      - EMAIL_PASS=6d767ccd31e4f0
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    links:
+      - db:db
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start
+
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=canguro

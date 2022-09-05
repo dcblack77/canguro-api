@@ -1,35 +1,38 @@
 db.getCollection("pokemons").aggregate(
     [
-        { 
-            $match: {
-                    "next_evolution": {$ne: null}
-                }
-        }, 
-        { 
-            $project: {
-                next_evolution: { 
-                    $arrayElemAt: [ "$next_evolution", 0 ] 
-                },
-                name: 1,
-            }
-        },
-        {
-            $lookup: {
-               from: "pokemons",
-               localField: "next_evolution.num",
-               foreignField: "num",
-               as: "evolution"
-             }
-        },
-        {
-            $unwind: "$evolution"
-        },
-        {
-            $project: {
-                name: 1,
-                _id:0,
-                "evolution.name": 1
-            }
+      { 
+        $match: {
+          "next_evolution": {$ne: null}
         }
-     ]
- );
+      }, 
+      { 
+          $project: {
+              next_evolution: { 
+                  $arrayElemAt: [ "$next_evolution", 0 ] 
+              },
+              name: 1,
+          }
+      },
+      {
+          $lookup: {
+             from: "pokemons",
+             localField: "next_evolution.num",
+             foreignField: "num",
+             as: "evolution"
+           }
+      },
+      {
+          $unwind: "$evolution"
+      },
+      {
+          $project: {
+              name: 1,
+              _id:0,
+              "evolution.name": 1,
+              "evolution.num": 1,
+              "evolution.spawn_time": 1
+          }
+      }
+   ]
+  );
+  
